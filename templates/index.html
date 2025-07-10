@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>XBee Online Monitor</title>
+<script src="https://cdn.socket.io/4.7.1/socket.io.min.js"></script>
+</head>
+<body>
+<h1>📶 Live XBee Data</h1>
+<div id="output"><p>{{ data }}</p></div>
+
+<script>
+const socket = io();
+socket.on("xbee_data", data => {
+const div = document.getElementById("output");
+const p = document.createElement("p");
+p.textContent = data.data;
+div.prepend(p);
+});
+</script>
+</body>
+</html>
