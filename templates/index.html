@@ -1,69 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>XBee Live Monitor</title>
+  <meta charset="UTF-8" />
+  <title>XBee Distance Monitor</title>
   <script src="https://cdn.socket.io/4.7.1/socket.io.min.js"></script>
   <style>
-    body {
-      font-family: "Segoe UI", Tahoma, sans-serif;
-      margin: 0; padding: 0;
-      background: #f4f4f9;
-      color: #333;
-    }
-    header {
-      background: #2a3f54;
-      color: #f4f4f9;
-      padding: 15px 20px;
-      text-align: center;
-    }
-    h1 {
-      margin: 0;
-      font-size: 1.8rem;
-      font-weight: normal;
-    }
-    #output {
-      padding: 20px;
-      max-width: 800px;
-      margin: auto;
-      display: flex;
-      flex-direction: column-reverse;
-    }
-    .data-entry {
-      background: #fff;
+    body { font-family: sans-serif; background: #fafafa; color: #333; margin: 0; }
+    header { background: #2c3e50; color: white; padding: 15px; text-align: center;}
+    h1 { margin: 0; font-size: 22px; }
+    #output { max-width: 600px; margin: 20px auto; }
+    .distance-msg {
+      background: #2ecc71;
+      color: #fff;
+      border-radius: 5px;
       margin-bottom: 10px;
-      padding: 12px 16px;
-      border-radius: 6px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    /* subtle animation */
-    .data-entry {
-      animation: fadeIn 0.3s ease-out;
+      padding: 12px;
+      font-size: 1.1rem;
+      animation: fadeIn 0.5s ease-out;
     }
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-5px); }
-      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>📡 XBee Live Monitor</h1>
-  </header>
+  <header><h1>📡 XBee Distance Change Monitor</h1></header>
   <div id="output">
-    <div class="data-entry">{{ data }}</div>
+    <div class="distance-msg">Waiting for distance data…</div>
   </div>
 
-  <script>
-    const socket = io();
+<script>
+  const socket = io();
 
-    socket.on("xbee_data", msg => {
-      const div = document.getElementById("output");
-      const entry = document.createElement("div");
-      entry.className = "data-entry";
-      entry.textContent = msg.data;
-      div.prepend(entry);
-    });
-  </script>
+  socket.on("xbee_data", msg => {
+    const output = document.getElementById("output");
+    const entry = document.createElement("div");
+    entry.className = "distance-msg";
+    entry.textContent = `Distance changed: ${msg.data} cm`;
+    output.prepend(entry);
+
+    // Optional: limit to latest 20 entries
+    if (output.children.length > 20) {
+      output.removeChild(output.lastChild);
+    }
+  });
+</script>
 </body>
 </html>
