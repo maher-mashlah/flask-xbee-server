@@ -1,21 +1,69 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>XBee Online Monitor</title>
-<script src="https://cdn.socket.io/4.7.1/socket.io.min.js"></script>
+  <meta charset="UTF-8">
+  <title>XBee Live Monitor</title>
+  <script src="https://cdn.socket.io/4.7.1/socket.io.min.js"></script>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      margin: 0; padding: 0;
+      background: #f4f4f9;
+      color: #333;
+    }
+    header {
+      background: #2a3f54;
+      color: #f4f4f9;
+      padding: 15px 20px;
+      text-align: center;
+    }
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: normal;
+    }
+    #output {
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+      display: flex;
+      flex-direction: column-reverse;
+    }
+    .data-entry {
+      background: #fff;
+      margin-bottom: 10px;
+      padding: 12px 16px;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    /* subtle animation */
+    .data-entry {
+      animation: fadeIn 0.3s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
-<h1>📶 Live XBee Data</h1>
-<div id="output"><p>{{ data }}</p></div>
+  <header>
+    <h1>📡 XBee Live Monitor</h1>
+  </header>
+  <div id="output">
+    <div class="data-entry">{{ data }}</div>
+  </div>
 
-<script>
-const socket = io();
-socket.on("xbee_data", data => {
-const div = document.getElementById("output");
-const p = document.createElement("p");
-p.textContent = data.data;
-div.prepend(p);
-});
-</script>
+  <script>
+    const socket = io();
+
+    socket.on("xbee_data", msg => {
+      const div = document.getElementById("output");
+      const entry = document.createElement("div");
+      entry.className = "data-entry";
+      entry.textContent = msg.data;
+      div.prepend(entry);
+    });
+  </script>
 </body>
 </html>
